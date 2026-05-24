@@ -13,7 +13,8 @@ Bu uygulama, IoT cihazlarınızın haberleşmesini sağlayan **Mosquitto MQTT Br
 * **Dinamik Web Yönetim Paneli:** PHP tabanlı web arayüzü üzerinden sisteme yeni MQTT istemcileri ekleyebilir, şifrelerini güncelleyebilir, genel trafik sınırlarını değiştirebilir veya belirli cihazlara özel esnek limitler tanımlayabilirsiniz. Active/Passive durumlarını ve ceza sürelerini canlı izleyebilirsiniz.
 * **Kesintisiz Güncelleme (Hot-Reload):** Panelden yapılan kullanıcı ekleme, şifre değiştirme veya ban kaldırma gibi işlemler, MQTT servislerini tamamen kapatıp açmadan (bağlı olan diğer IoT cihazların bağlantısını koparmadan) Unix Docker soketi üzerinden arka planda anında canlıya alınır.
 <img width="1087" height="697" alt="image" src="https://github.com/user-attachments/assets/06bf17eb-f889-4817-b4d7-d5a14dd9e051" />
-  
+<img width="1082" height="744" alt="image" src="https://github.com/user-attachments/assets/d2bb071e-4bc2-4ab6-9083-f40b1b056a23" />
+
 ## 1. Sistem Gereksinimleri ve Kurulum (Raspberry Pi & Linux)
 
 Ubuntu/Debian tabanlı Linux dağıtımları ve Raspberry Pi üzerinde altyapıyı hazırlamak için aşağıdaki komutları sırasıyla çalıştırın:
