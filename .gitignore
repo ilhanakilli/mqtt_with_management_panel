@@ -1,0 +1,4 @@
+mosquitto/config/traffic_db.json
+mosquitto/config/users.txt
+mosquitto/log/*
+!mosquitto/log/.gitkeep

@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt-broker
+    ports:
+      - "2883:2883"
+      - "2884:2884"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/log:/mosquitto/log
+      - ./mosquitto/data:/mosquitto/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  mqtt-panel:
+    image: trafex/php-nginx
+    container_name: mqtt-panel
+    ports:
+      - "8880:8080"
+    volumes:
+      - ./panel-src:/var/www/html
+      - ./mosquitto/config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  traffic-monitor:
+    image: python:3.9-slim
+    container_name: mqtt-traffic-monitor
+    volumes:
+      - ./mosquitto/config:/config
+      - ./mosquitto/log:/log
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: python -u /config/monitor.py
+    restart: always
