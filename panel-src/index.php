@@ -1,6 +1,6 @@
 <?php
 $env_user = 'admin'; 
-$env_pass = 'PASSWORD'; // BURAYI KENDI GUClU SIFRENIZLE DEGISTIRIN
+$env_pass = 'PASSWORD'; // Sifrenizi buraya girin
 
 if (($_SERVER['PHP_AUTH_USER'] ?? null) !== $env_user || ($_SERVER['PHP_AUTH_PW'] ?? null) !== $env_pass) {
     header('WWW-Authenticate: Basic realm="MQTT Admin Panel"'); header('HTTP/1.0 401 Unauthorized'); exit;
@@ -84,26 +84,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 $ordered_users = []; foreach ($db['mqtt_users'] as $u => $h) { $ordered_users[$u] = $db['usage'][$u]['m_c'] ?? 0; } arsort($ordered_users);
 ?>
 <!DOCTYPE html><html><head><title>MQTT Panel</title><meta charset="utf-8">
+<script>
+    if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-mode');
+    function toggleTheme() {
+        document.documentElement.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+    }
+</script>
 <style>
-    body { font-family: sans-serif; background: #f4f6f9; padding: 20px; margin: 0; display: flex; gap: 20px; }
-    @media (max-width: 1100px) { body { flex-direction: column; } }
+    :root { --bg: #f4f6f9; --cbg: #fff; --txt: #333; --brd: #ddd; --thbg: #f8f9fa; }
+    .dark-mode { --bg: #121212; --cbg: #1e1e1e; --txt: #e0e0e0; --brd: #333; --thbg: #2c2c2c; }
+    body { font-family: sans-serif; background: var(--bg); color: var(--txt); padding: 20px; margin: 0; transition: background 0.3s, color 0.3s; }
+    .container { display: flex; gap: 20px; margin-top: 10px; }
+    @media (max-width: 1100px) { .container { flex-direction: column; } }
     .col { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-    .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .card { background: var(--cbg); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; font-size: 12px; }
-    th { background: #f8f9fa; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--brd); font-size: 12px; }
+    th { background: var(--thbg); }
     .flex-row { display: flex; gap: 10px; margin-bottom: 8px; }
     .flex-row div { flex: 1; }
-    input, select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 12px; }
-    label { font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 2px; }
+    input, select { width: 100%; padding: 6px; border: 1px solid var(--brd); border-radius: 4px; box-sizing: border-box; font-size: 12px; background: var(--cbg); color: var(--txt); }
+    label { font-size: 11px; font-weight: bold; color: var(--txt); display: block; margin-bottom: 2px; opacity: 0.8; }
     button { padding: 6px 10px; background: #007bff; color: #fff; border: 0; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
     .btn-danger { background: #dc3545; } .btn-warning { background: #ffc107; color: #212529; } .btn-success { background: #28a745; } .btn-secondary { background: #6c757d; }
     .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; color: #fff; }
     .bg-success { background: #28a745; } .bg-danger { background: #dc3545; }
+    .theme-btn { position: absolute; top: 15px; right: 20px; background: #6c757d; }
 </style></head><body>
+
+<button onclick="toggleTheme()" class="theme-btn">🌓 Tema</button>
+<h2 style="margin-top:0;">MQTT Canlı Trafik Sınırları ve Ceza Sistemi</h2>
+
+<div class="container">
 <div class="col" style="flex: 2.5;">
     <div class="card">
-        <h2>MQTT Canlı Trafik Sınırları ve Ceza Sistemi</h2>
         <div style="overflow-x:auto;">
             <table>
                 <thead>
@@ -180,7 +195,7 @@ $ordered_users = []; foreach ($db['mqtt_users'] as $u => $h) { $ordered_users[$u
         </form>
     </div>
 
-    <div class="card" id="user-limit-card" style="display:none; background:#fff3cd;">
+    <div class="card" id="user-limit-card" style="display:none;">
         <h3 id="limit-title">Kullanıcı Sınırı Düzenle</h3>
         <form method="POST">
             <input type="hidden" name="action" value="save_user_limit"><input type="hidden" name="username" id="limit-username">
@@ -216,6 +231,7 @@ $ordered_users = []; foreach ($db['mqtt_users'] as $u => $h) { $ordered_users[$u
             <button type="button" class="btn-danger" id="cancel-user-btn" style="display:none; width:100%; margin-top:5px;" onclick="resetUserForm()">İptal</button>
         </form>
     </div>
+</div>
 </div>
 
 <script>
